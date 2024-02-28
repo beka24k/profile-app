@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nan</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <style>
+        body{
+            background-color: pink;
+        }
+        .con{
+            display: flex;
+            margin: auto;
+            background-color: aliceblue;
+            width: 50%;
+            height: 300px;
+            border-radius: 16px;
+        }
+        .con2{
+            display: flex;
+            margin: auto;
+            background-color: aliceblue;
+            width: 50%;
+            height: 330px;
+            border-radius: 16px;
+        }
+        .btn{
+            width: 25%;
+            height: 70px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container con2">
+        <div class="row">
+        <div class="profile col">
+            <img src="<%= data.img %>" width="30" height="30">
+            <p><%=data.lastName%> <%=data.firstName%></p>
+            <p><%=data.email%></p>
+            <p><%=data.age%></p>
+            <p><%=data.role%></p>
+        </div>
+        <div class="con">
+        <div class="mb-3 mt-3">
+
+            <form action="/admin" method="post">
+                <label for="search">Enter the email:</label>
+                <input type="text" placeholder="Enter the email" name="search"/>
+                <input type="text" placeholder="Enter the img" name="img"/>
+                <input type="text" placeholder="Enter the age" name="age"/>
+                <input type="text" placeholder="Enter the lastname" name="lName"/>
+                <input type="text" placeholder="Enter the firstname" name="fName"/>
+                <input type="text" placeholder="Enter the role" name="role"/>
+                <button type="submit" class="btn btn-danger" id="myBtn" data-bs-toggle="tooltip" title="Hooray!" >Submit</button>
+                <button class="btn btn-danger" id="myBtn" data-bs-toggle="tooltip" ><a style="color: black;" href="/adminAdd">add user</a></button>
+        </form>
+        </div>
+        
+        </div>
+    </div>
+    </div>
+    <div class="container">
+        <canvas id="myChart3"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let wbl = document.querySelector('#myChart3').getContext('2d');
+
+    // Получение данных с TMDb API
+    fetch('https://api.themoviedb.org/3/discover/movie?api_key=e3bc925826c5f02f59270b130b3d2860&language=en-US&sort_by=popularity.desc')
+        .then(response => response.json())
+        .then(data => {
+            // Обработка данных и подготовка для графика
+            let titles = data.results.map(movie => movie.title);
+            let ratings = data.results.map(movie => movie.vote_average);
+
+            // Создание графика
+            let myChart = new Chart(wbl, {
+                type: 'line',
+                data: {
+                    labels: titles,
+                    datasets: [{
+                        label: 'Movie Ratings',
+                        data: ratings,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+</script>
+        <canvas id="myChart"></canvas>
+        <canvas id="myChart2"></canvas>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            let ctx = document.querySelector('#myChart').getContext('2d');
+        
+            // Получение данных с News API
+            fetch('https://newsapi.org/v2/top-headlines?country=us&apiKey=40658f3675234df8b7286c1871ea31bb')
+                .then(response => response.json())
+                .then(data => {
+                    // Обработка данных и подготовка для графика
+                    let sources = {};
+                    data.articles.forEach(article => {
+                        let source = article.source.name;
+                        if (!sources[source]) {
+                            sources[source] = 1;
+                        } else {
+                            sources[source]++;
+                        }
+                    });
+        
+                    let labels = Object.keys(sources);
+                    let counts = Object.values(sources);
+        
+                    // Создание графика
+                    let myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Number of Articles',
+                                data: counts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+        </script>
+            <canvas id="myChart2"></canvas>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <script>
+                let tbl = document.querySelector('#myChart2').getContext('2d');
+            
+                // Получение данных с REST Countries API
+                fetch('https://restcountries.com/v3.1/all')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Обработка данных и подготовка для графика
+                        let countries = data.slice(0, 5).map(country => country.name.common);
+                        let populations = data.slice(0, 5).map(country => country.population);
+            
+                        // Создание графика
+                        let myChart = new Chart(tbl, {
+                            type: 'line',
+                            data: {
+                                labels: countries,
+                                datasets: [{
+                                    label: 'Population',
+                                    data: populations,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
+            </script>
+
+
+
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>
